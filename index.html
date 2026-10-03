@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MindMetrics – Mental Health Score Predictor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+
+<header class="hero">
+  <span class="badge" id="apiBadge"><i class="dot"></i> <span id="apiText">Checking API…</span></span>
+  <h1>Mind<span class="grad">Metrics</span></h1>
+  <p>Tell us about your daily habits and social media use — our model predicts a mental health score for you.</p>
+</header>
+
+<main class="layout">
+  <!-- FORM -->
+  <form id="form" class="card" novalidate>
+    <h2><span class="ico">🧑‍🎓</span> About you</h2>
+    <div class="grid">
+      <label class="field">
+        <span>Age</span>
+        <input type="number" id="age" min="10" max="100" value="21" required />
+      </label>
+
+      <div class="field">
+        <span>Gender</span>
+        <div class="chips" data-name="gender">
+          <button type="button" class="chip active" data-value="Male">Male</button>
+          <button type="button" class="chip" data-value="Female">Female</button>
+        </div>
+      </div>
+
+      <label class="field">
+        <span>Country</span>
+        <select id="country"></select>
+      </label>
+
+      <label class="field">
+        <span>Academic level</span>
+        <select id="academic_level">
+          <option>High School</option>
+          <option selected>Undergraduate</option>
+          <option>Graduate</option>
+        </select>
+      </label>
+    </div>
+
+    <h2><span class="ico">📱</span> Social media</h2>
+    <div class="grid">
+      <label class="field">
+        <span>Most used platform</span>
+        <select id="most_used_platform">
+          <option>Instagram</option><option>Facebook</option><option>YouTube</option>
+          <option>TikTok</option><option>Snapchat</option><option>Twitter</option>
+          <option>LinkedIn</option><option>WhatsApp</option><option>WeChat</option>
+          <option>LINE</option><option>KakaoTalk</option><option>VKontakte</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Main purpose of use</span>
+        <select id="purpose_of_use">
+          <option>Entertainment</option><option>Networking</option>
+          <option>Education</option><option>News</option>
+        </select>
+      </label>
+
+      <label class="field full slider">
+        <span>Avg. daily usage <b data-out="avg_daily_usage_hours">5</b> hrs</span>
+        <input type="range" id="avg_daily_usage_hours" min="0" max="24" step="0.5" value="5" />
+      </label>
+
+      <label class="field full">
+        <span>Phone unlocks per day</span>
+        <input type="number" id="daily_unlocks" min="0" value="60" required />
+      </label>
+    </div>
+
+    <h2><span class="ico">🌿</span> Lifestyle</h2>
+    <div class="grid">
+      <label class="field full slider">
+        <span>Study hours / day <b data-out="study_hours">4</b> hrs</span>
+        <input type="range" id="study_hours" min="0" max="24" step="0.5" value="4" />
+      </label>
+      <label class="field full slider">
+        <span>Physical activity / day <b data-out="physical_activity_hours">1</b> hrs</span>
+        <input type="range" id="physical_activity_hours" min="0" max="24" step="0.5" value="1" />
+      </label>
+      <label class="field full slider">
+        <span>Sleep per night <b data-out="sleep_hours_per_night">7</b> hrs</span>
+        <input type="range" id="sleep_hours_per_night" min="0" max="24" step="0.5" value="7" />
+      </label>
+
+      <div class="field full">
+        <span>Current stress level</span>
+        <div class="chips stress" data-name="stress_level">
+          <button type="button" class="chip" data-value="Low">Low</button>
+          <button type="button" class="chip active" data-value="Medium">Medium</button>
+          <button type="button" class="chip" data-value="High">High</button>
+          <button type="button" class="chip" data-value="Very High">Very High</button>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn" id="submitBtn">
+      <span class="btn-text">Predict my score</span>
+      <span class="spinner"></span>
+    </button>
+    <p class="error" id="error" role="alert"></p>
+  </form>
+
+  <!-- RESULT -->
+  <aside class="card result" id="result">
+    <h2><span class="ico">📊</span> Your result</h2>
+
+    <div class="gauge-wrap">
+      <svg viewBox="0 0 200 200" class="gauge">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#d00f22" />
+            <stop offset="100%" stop-color="#ff3b4a" />
+          </linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="86" class="track" />
+        <circle cx="100" cy="100" r="86" class="bar" id="bar" />
+      </svg>
+      <div class="gauge-center">
+        <div class="score" id="score">–</div>
+        <div class="outof">out of 10</div>
+      </div>
+    </div>
+
+    <div class="verdict" id="verdict">Fill the form and hit predict</div>
+    <ul class="tips" id="tips"></ul>
+    <p class="note">⚠️ This is a machine-learning estimate for educational purposes — not a medical diagnosis. If you're struggling, please talk to a qualified professional.</p>
+  </aside>
+</main>
+
+<footer>Built with ❤️ by Achivant · FastAPI + scikit-learn</footer>
+<script src="script.js"></script>
+</body>
+</html>
