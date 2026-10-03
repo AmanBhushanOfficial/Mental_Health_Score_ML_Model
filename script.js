@@ -1,7 +1,7 @@
 /* ===== CONFIG =====
    If the page is opened from the FastAPI server (http://127.0.0.1:2200) we use relative URLs.
    If you open index.html directly (file://) or from another server, we call the API on port 2200. */
-const API_BASE = (location.protocol.startsWith("http") && location.port === "2200") ? "" : "http://127.0.0.1:2200";
+const API_BASE = (location.protocol.startsWith("http") && location.port === "2200") ? "" : "https://mental-health-score-ml-model-1.onrender.com";
 const API_URL = API_BASE + "/predict";
 const HEALTH_URL = API_BASE + "/health";
 
